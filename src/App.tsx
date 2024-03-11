@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import './App.css';
+import { useCart } from './cart/CartProvider';
 import { Button } from './components/ui/button';
 import { Cashier } from './data/data';
 import FoodData from './data/data';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { filterCashiers } from './lib/searchUtils';
 import { ScrollArea } from './components/ui/scroll-area';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from './components/ui/dialog';
-import { DialogDescription, DialogTrigger } from '@radix-ui/react-dialog';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from './components/ui/dialog';
+import SearchBar from './components/SearchBar';
 
 const App: React.FC = () => {
   const [cashiers, setCashiers] = useState<Cashier[]>(FoodData);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [purchaseQuantities, setPurchaseQuantities] = useState<{ [cashierId: string]: { [foodId: string]: number } }>({});
+  const { totalAmount } = useCart();
+  console.log(totalAmount);
 
   const handleQuantityChange = (cashierId: string, foodId: string, quantity: number) => {
     setPurchaseQuantities(prevState => ({
@@ -69,15 +72,7 @@ const App: React.FC = () => {
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-3xl font-bold mb-4">Cashier Dashboard</h1>
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search"
-          className="px-4 py-2 border rounded-md w-full"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
-      </div>
+      <SearchBar value={searchQuery} onChange={handleSearch}/>
       <div className='flex justify-between items-center mb-4'>
         <div className='semi-bold'>Harus bayar: Rp. {calculateTotalPrice()}</div>
       </div>
@@ -98,7 +93,7 @@ const App: React.FC = () => {
                           <p className="text-gray-500">Stock: {food.stock}</p>
                           <p className="text-gray-500">Price: Rp. {food.price}</p>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex flex-col">
                           <input
                             type="number"
                             placeholder='0'
@@ -107,7 +102,13 @@ const App: React.FC = () => {
                             className="py-1 px-2 mx-2 text-center border border-gray-300 rounded-md w-16"
                             min={0}
                           />
+                          <div className="px-2 py-1">
+                            <Button className='text-sm'>
+                              + Add
+                            </Button>
+                          </div>
                         </div>
+
                       </li>
                     ))}
                   </ul>
