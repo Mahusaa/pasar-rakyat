@@ -1,16 +1,5 @@
 import React, { createContext, useContext, useState, FC } from 'react';
-
-interface FoodItem {
-  id: string;
-  name: string;
-  price: number;
-}
-
-interface Cashier {
-  id: string;
-  name: string;
-  foods: FoodItem[];
-}
+import FoodData from '../data/data';
 
 interface CartItem {
   cashierId: string;
@@ -33,9 +22,9 @@ interface CartContextType {
 const CartContext = createContext<CartContextType>({
   cartItems: [],
   totalAmount: 0,
-  addToCart: () => {},
-  removeFromCart: () => {},
-  clearCart: () => {},
+  addToCart: () => { },
+  removeFromCart: () => { },
+  clearCart: () => { },
 });
 
 export const useCart = () => useContext(CartContext);
@@ -53,9 +42,21 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
       } else {
         updatedCartItems.push({ cashierId, foodId, quantity: 1 });
       }
+      // Calculate total amount based on updatedCartItems
+      const amount = updatedCartItems.reduce((total, item) => {
+        const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
+        if (cashier) {
+          const food = cashier.foods.find(food => food.id === item.foodId);
+          if (food) {
+            total += food.price * item.quantity;
+          }
+        }
+        return total;
+      }, 0);
+      // Set total amount using the calculated amount
+      setTotalAmount(amount);
       return updatedCartItems;
     });
-    updateTotalAmount();
   };
 
   const removeFromCart = (cashierId: string, foodId: string) => {
@@ -68,44 +69,31 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
         } else {
           updatedCartItems.splice(existingCartItemIndex, 1);
         }
+        // Calculate total amount based on updatedCartItems
+        const amount = updatedCartItems.reduce((total, item) => {
+          const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
+          if (cashier) {
+            const food = cashier.foods.find(food => food.id === item.foodId);
+            if (food) {
+              total += food.price * item.quantity;
+            }
+          }
+          return total;
+        }, 0);
+        // Set total amount using the calculated amount
+        setTotalAmount(amount);
         return updatedCartItems;
       }
       return prevCartItems;
     });
-    updateTotalAmount();
   };
+
 
   const clearCart = () => {
     setCartItems([]);
     setTotalAmount(0);
   };
 
-  const updateTotalAmount = () => {
-    let amount = 0;
-    cartItems.forEach(item => {
-      const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
-      if (cashier) {
-        const food = cashier.foods.find(food => food.id === item.foodId);
-        if (food) {
-          amount += food.price * item.quantity;
-        }
-      }
-    });
-    setTotalAmount(amount);
-  };
-
-  const FoodData: Cashier[] = [
-    {
-      id: '1',
-      name: 'Pak Roni',
-      foods: [
-        { id: '1', name: 'Pizza', price: 10000 },
-        { id: '2', name: 'Cake', price: 10000 },
-        { id: '3', name: 'Nasgor', price: 10000 },
-      ],
-    },
-    // Add more cashiers and food items here if needed
-  ];
 
   return (
     <CartContext.Provider value={{ cartItems, totalAmount, addToCart, removeFromCart, clearCart }}>

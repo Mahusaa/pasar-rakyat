@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './App.css';
 import { useCart } from './cart/CartProvider';
 import { Button } from './components/ui/button';
@@ -9,72 +9,83 @@ import { filterCashiers } from './lib/searchUtils';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from './components/ui/dialog';
 import SearchBar from './components/SearchBar';
+import DisplayCart from './components/DisplayCart';
 
 const App: React.FC = () => {
   const [cashiers, setCashiers] = useState<Cashier[]>(FoodData);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [purchaseQuantities, setPurchaseQuantities] = useState<{ [cashierId: string]: { [foodId: string]: number } }>({});
-  const { totalAmount } = useCart();
+  const { totalAmount, addToCart, cartItems } = useCart();
+  const amountInputRef = useRef<HTMLInputElement>(null);
+  const [amountIsValid, setAmountIsValid] = useState<boolean>(true);
+  const [showCartAnimation, setShowCartAnimation] = useState<boolean>(false);
+
+
+  // const handlePurchase = (cashierId: string, purchaseQuantities: { [foodId: string]: number }) => {
+  //   const updatedCashiers = cashiers.map(cashier => {
+  //     if (cashier.id === cashierId) {
+  //       const updatedFoods = cashier.foods.map(food => {
+  //         const quantityPurchased = purchaseQuantities[food.id] || 0;
+  //         if (quantityPurchased > 0 && food.stock >= quantityPurchased) {
+  //           return { ...food, stock: food.stock - quantityPurchased };
+  //         }
+  //         return food;
+  //       });
+  //       return { ...cashier, foods: updatedFoods };
+  //     }
+  //     return cashier;
+  //   });
+  //   setCashiers(updatedCashiers);
+
+  //   setPurchaseQuantities(prevState => ({ ...prevState, [cashierId]: {} }))
+  // };
+  console.log(cartItems);
   console.log(totalAmount);
-
-  const handleQuantityChange = (cashierId: string, foodId: string, quantity: number) => {
-    setPurchaseQuantities(prevState => ({
-      ...prevState,
-      [cashierId]: {
-        ...prevState[cashierId],
-        [foodId]: quantity
-      }
-    }));
-  };
-
-  const handlePurchase = (cashierId: string, purchaseQuantities: { [foodId: string]: number }) => {
-    const updatedCashiers = cashiers.map(cashier => {
-      if (cashier.id === cashierId) {
-        const updatedFoods = cashier.foods.map(food => {
-          const quantityPurchased = purchaseQuantities[food.id] || 0;
-          if (quantityPurchased > 0 && food.stock >= quantityPurchased) {
-            return { ...food, stock: food.stock - quantityPurchased };
-          }
-          return food;
-        });
-        return { ...cashier, foods: updatedFoods };
-      }
-      return cashier;
-    });
-    setCashiers(updatedCashiers);
-
-    setPurchaseQuantities(prevState => ({ ...prevState, [cashierId]: {} }))
-  };
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredCashiers = filterCashiers(cashiers, searchQuery);
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>, cashierId: string, foodId: string) => {
+    e.preventDefault();
 
-  const calculateTotalPrice = (): number => {
-    let totalPrice = 0;
-    cashiers.forEach(cashier => {
-      const purchaseItems = purchaseQuantities[cashier.id];
+    if (!amountInputRef.current) return;
 
-      if (purchaseItems) {
-        cashier.foods.forEach(food => {
-          const quantity = purchaseItems[food.id] || 0;
-          totalPrice += quantity * food.price;
-        });
-      }
+    const enteredAmount = amountInputRef.current.value;
+    const enteredAmountToNumber = +enteredAmount;
+
+    if (
+      enteredAmount.trim().length === 0 ||
+      enteredAmountToNumber < 1 ||
+      enteredAmountToNumber > 5
+    ) {
+      setAmountIsValid(false);
+      return;
+    }
+
+    addToCart(cashierId, foodId);
+    setShowCartAnimation(true); // Set animation to true when adding to cart
+    setTimeout(() => {
+      setShowCartAnimation(false); // Reset animation after a delay
+    }, 100);
+  };
+  const calculateTotalQuantity = (): number => {
+    let totalQuantity = 0;
+    cartItems.forEach(item => {
+      totalQuantity += item.quantity;
     });
-
-    return totalPrice;
+    return totalQuantity;
   };
 
 
+  const filteredCashiers = filterCashiers(cashiers, searchQuery);
+
   return (
     <div className="container mx-auto mt-8">
-      <h1 className="text-3xl font-bold mb-4">Cashier Dashboard</h1>
-      <SearchBar value={searchQuery} onChange={handleSearch}/>
-      <div className='flex justify-between items-center mb-4'>
-        <div className='semi-bold'>Harus bayar: Rp. {calculateTotalPrice()}</div>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Cashier Dashboard</h1>
+        <div className="flex">
+          <SearchBar value={searchQuery} onChange={handleSearch} />
+          <DisplayCart showCartAnimation={showCartAnimation} calculateTotalQuantity={calculateTotalQuantity} cashiers={FoodData}/>
+        </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredCashiers.map(cashier => (
@@ -94,7 +105,26 @@ const App: React.FC = () => {
                           <p className="text-gray-500">Price: Rp. {food.price}</p>
                         </div>
                         <div className="flex flex-col">
-                          <input
+                          <form onSubmit={(e) => submitHandler(e, cashier.id, food.id)}>
+                            <input
+                              id={"amount_" + cashier.id}
+                              type="number"
+                              min="1"
+                              max="5"
+                              step="1"
+                              defaultValue="1"
+                              ref={amountInputRef}
+                            />
+                            {/* Pass cashierId and foodId as data attributes */}
+                            <Button
+                              data-cashier-id={cashier.id}
+                              data-food-id={food.id}
+                              type="submit" // Ensure the button submits the form
+                            >
+                              + Add
+                            </Button>
+                          </form>
+                          {/* <input
                             type="number"
                             placeholder='0'
                             value={(purchaseQuantities[cashier.id] && purchaseQuantities[cashier.id][food.id])}
@@ -106,7 +136,7 @@ const App: React.FC = () => {
                             <Button className='text-sm'>
                               + Add
                             </Button>
-                          </div>
+                          </div> */}
                         </div>
 
                       </li>
@@ -114,7 +144,7 @@ const App: React.FC = () => {
                   </ul>
                 </ScrollArea>
               </CardContent>
-              <div className="flex justify-between items-center px-4 py-2 bg-gray-100">
+              {/* <div className="flex justify-between items-center px-4 py-2 bg-gray-100">
                 <p className="font-semibold">Harus Bayar: Rp. {calculateTotalPrice()}</p>
                 <Dialog>
                   <DialogTrigger><Button>Konfirmasi</Button></DialogTrigger>
@@ -144,7 +174,7 @@ const App: React.FC = () => {
                     </DialogClose>
                   </DialogContent>
                 </Dialog>
-              </div>
+              </div> */}
             </Card>
           </div>
         ))}
