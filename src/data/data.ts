@@ -5,14 +5,14 @@ export interface FoodItem {
     price: number;
   }
   
-export interface Cashier {
+export interface Counter {
     id: string;
     name: string;
     foods: FoodItem[];
   }
 
 
-const FoodData: Cashier[] = [
+const FoodData: Counter[] = [
   {
     id: '1',
     name: 'Pak Roni',

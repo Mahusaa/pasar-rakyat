@@ -2,17 +2,16 @@ import React, { useRef, useState } from 'react';
 import './App.css';
 import { useCart } from './cart/CartProvider';
 import { Button } from './components/ui/button';
-import { Cashier } from './data/data';
+import { Counter } from './data/data';
 import FoodData from './data/data';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { filterCashiers } from './lib/searchUtils';
 import { ScrollArea } from './components/ui/scroll-area';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from './components/ui/dialog';
 import SearchBar from './components/SearchBar';
 import DisplayCart from './components/DisplayCart';
 
 const App: React.FC = () => {
-  const [cashiers, setCashiers] = useState<Cashier[]>(FoodData);
+  const [cashiers, setCashiers] = useState<Counter[]>(FoodData);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { totalAmount, addToCart, cartItems } = useCart();
   const amountInputRef = useRef<HTMLInputElement>(null);

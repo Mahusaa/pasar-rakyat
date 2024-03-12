@@ -42,7 +42,6 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
       } else {
         updatedCartItems.push({ cashierId, foodId, quantity: 1 });
       }
-      // Calculate total amount based on updatedCartItems
       const amount = updatedCartItems.reduce((total, item) => {
         const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
         if (cashier) {
@@ -53,7 +52,6 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
         }
         return total;
       }, 0);
-      // Set total amount using the calculated amount
       setTotalAmount(amount);
       return updatedCartItems;
     });
@@ -68,8 +66,7 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
           updatedCartItems[existingCartItemIndex].quantity -= 1;
         } else {
           updatedCartItems.splice(existingCartItemIndex, 1);
-        }
-        // Calculate total amount based on updatedCartItems
+        };
         const amount = updatedCartItems.reduce((total, item) => {
           const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
           if (cashier) {

@@ -2,12 +2,12 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useCart } from "../cart/CartProvider";
-import { Cashier } from "../data/data";
+import { Counter } from "../data/data";
 
 interface DisplayCartProps {
     showCartAnimation: boolean;
     calculateTotalQuantity: () => number;
-    cashiers: Cashier[]; // Add cashiers as a prop
+    cashiers: Counter[];
 }
 
 interface CartItem {
@@ -31,6 +31,20 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
         return 0;
     };
 
+    const groupItemsByCashier = () => {
+        const groupedItems: Record<string, CartItem[]> = {};
+
+        cartItems.forEach((item) => {
+            if (!groupedItems[item.cashierId]) {
+                groupedItems[item.cashierId] = [item];
+            } else {
+                groupedItems[item.cashierId].push(item);
+            }
+        });
+
+        return groupedItems;
+    };
+
     return (
         <Dialog>
             <DialogTrigger>
@@ -38,9 +52,7 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>
-                        Apa kamu yakin
-                    </DialogTitle>
+                    <DialogTitle>Apa kamu yakin</DialogTitle>
                 </DialogHeader>
                 <div className="bg-white p-4 rounded-md shadow-md">
                     <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
@@ -48,26 +60,29 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
                         <p>Your cart is empty.</p>
                     ) : (
                         <ul className="divide-y divide-gray-200">
-                            {cartItems.map((item, index) => {
-                                const subtotal = calculateSubtotal(item);
-                                const cashier = cashiers.find((cashier) => cashier.id === item.cashierId);
-                                const food = cashier?.foods.find((food) => food.id === item.foodId);
+                            {Object.keys(groupItemsByCashier()).map((cashierId) => (
+                                <li key={cashierId} className="py-2">
+                                    <div className="font-semibold">{cashiers.find(cashier => cashier.id === cashierId)?.name}</div>
+                                    <ul>
+                                        {groupItemsByCashier()[cashierId].map((item, index) => {
+                                            const subtotal = calculateSubtotal(item);
+                                            const food = cashiers.find((cashier) => cashier.id === item.cashierId)?.foods.find((food) => food.id === item.foodId);
 
-                                return (
-                                    <li key={index} className="py-2">
-                                        <div className="flex justify-between items-center">
-                                            <div>
-                                                <span className="font-semibold">{cashier?.name}</span>
-                                                <span className="text-gray-500"> - {food?.name}</span>
-                                            </div>
-                                            <div>
-                                                <span className="font-semibold">Quantity: {item.quantity}</span>
-                                                <span className="text-gray-500">Subtotal: Rp. {subtotal}</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                );
-                            })}
+                                            return (
+                                                <li key={index} className="flex justify-between items-center">
+                                                    <div>
+                                                        <span>{food?.name}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span>Quantity: {item.quantity}</span>
+                                                        <span>Subtotal: Rp. {subtotal}</span>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </li>
+                            ))}
                         </ul>
                     )}
                 </div>
