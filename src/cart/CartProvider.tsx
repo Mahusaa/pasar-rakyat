@@ -77,7 +77,6 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
           }
           return total;
         }, 0);
-        // Set total amount using the calculated amount
         setTotalAmount(amount);
         return updatedCartItems;
       }
