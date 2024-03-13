@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { useCart } from './cart/CartProvider';
 import { Button } from './components/ui/button';
@@ -9,13 +9,12 @@ import { filterCashiers } from './lib/searchUtils';
 import { ScrollArea } from './components/ui/scroll-area';
 import SearchBar from './components/SearchBar';
 import DisplayCart from './components/DisplayCart';
+import CartIcon from './cart/CartsIcon';
 
 const App: React.FC = () => {
   const [cashiers, setCashiers] = useState<Counter[]>(FoodData);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { totalAmount, addToCart, cartItems } = useCart();
-  const amountInputRef = useRef<HTMLInputElement>(null);
-  const [amountIsValid, setAmountIsValid] = useState<boolean>(true);
   const [showCartAnimation, setShowCartAnimation] = useState<boolean>(false);
 
   console.log(cartItems);
@@ -70,7 +69,7 @@ const App: React.FC = () => {
                         </div>
                         <div className="flex flex-col">
                           <Button
-                            onClick={(e) => handleAnimation(cashier.id, food.id)}
+                            onClick={() => handleAnimation(cashier.id, food.id)}
                           >
                             + Add
                           </Button>
