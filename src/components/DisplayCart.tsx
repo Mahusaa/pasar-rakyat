@@ -73,7 +73,7 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
                                                     <div>
                                                         <h2 className="text-gray-700">{food?.name}</h2>
                                                         <div className="flex justify-between items-center w-40">
-                                                            <span className="font-semibold text-orange-600">{foodPrice(item)}</span>
+                                                            <span className="font-semibold text-orange-600">Rp. {foodPrice(item)}</span>
                                                             <span className="font-semibold bg-gray-200 border border-gray-300 rounded-md px-2 py-1 text-gray-700">x {item.quantity}</span>
                                                         </div>
                                                     </div>
@@ -92,8 +92,8 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
                 </div>
                 </ScrollArea>
                 <div className="flex justify-between items-center font-bold text-lg mt-4">
-                    <span>Total Amount</span>
-                    <span>{totalAmount}</span>
+                    <span>Jumlah Bayar</span>
+                    <span className="text-orange-600">Rp. {totalAmount}</span>
                 </div>
                 <div className="text-right mt-4">
                     <Button variant="outline" className="mr-2 hover:bg-black hover:text-white border-2 border-black" onClick={clearCart}>

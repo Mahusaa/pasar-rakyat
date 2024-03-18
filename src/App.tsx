@@ -9,16 +9,13 @@ import { filterCashiers } from './lib/searchUtils';
 import { ScrollArea } from './components/ui/scroll-area';
 import SearchBar from './components/SearchBar';
 import DisplayCart from './components/DisplayCart';
-import CartIcon from './cart/CartsIcon';
+import WebSocketTest from './test/testWebSockect';
 
 const App: React.FC = () => {
-  const [cashiers, setCashiers] = useState<Counter[]>(FoodData);
+  const [cashiers] = useState<Counter[]>(FoodData);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const { totalAmount, addToCart, cartItems } = useCart();
+  const { addToCart, cartItems } = useCart();
   const [showCartAnimation, setShowCartAnimation] = useState<boolean>(false);
-
-  console.log(cartItems);
-  console.log(totalAmount);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
@@ -50,6 +47,7 @@ const App: React.FC = () => {
           <DisplayCart showCartAnimation={showCartAnimation} calculateTotalQuantity={calculateTotalQuantity} cashiers={FoodData} />
         </div>
       </div>
+      <WebSocketTest />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredCashiers.map(cashier => (
           <div key={cashier.id} className="rounded-lg overflow-hidden shadow-md border">
