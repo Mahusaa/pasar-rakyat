@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState } from 'react';
 import './App.css';
 import { useCart } from './cart/CartProvider';
 import { Button } from './components/ui/button';
@@ -67,7 +67,7 @@ const App: React.FC = () => {
                         </div>
                         <div className="flex flex-col">
                           <Button
-                            onClick={() => handleAnimation(cashier.id, food.id)}
+                            onClick={(e) => handleAnimation(cashier.id, food.id)}
                           >
                             + Add
                           </Button>
