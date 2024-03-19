@@ -1,17 +1,20 @@
+require('dotenv').config({path: "./backend/.env"});
 const express = require('express');
 const firebaseAdmin = require('firebase-admin');
 const cors = require('cors');
 const WebSocket = require('ws');
-require('dotenv').config();
+
 
 const app = express();
 const port = 5000;
+const databaseUrl = process.env.DATABASE_URL;
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require('./private/serviceAccountKey.json');
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(serviceAccount),
-  databaseURL: "https://pasar-rakyat-f571b-default-rtdb.asia-southeast1.firebasedatabase.app"
+  databaseURL: databaseUrl,
+
 });
 
 const db = firebaseAdmin.database();
