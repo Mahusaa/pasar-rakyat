@@ -1,21 +1,12 @@
-// data.js
-require('dotenv').config({path: './backend/.env'})
-const firebaseAdmin = require('firebase-admin');
-const serviceAccount = require('../private/serviceAccountKey.json');
-
-const databaseURL = process.env.DATABASE_URL;
-
-firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert(serviceAccount),
-  databaseURL: databaseURL,
-});
+const firebaseApp = require('../config/firebaseConfig');
 
 const updateStock = async (counterId, foodId, quantity) => {
   try {
+    const db = firebaseApp.database();
     const counterIndex = parseInt(counterId) - 1;
     const foodIndex = parseInt(foodId) - 1;
 
-    const foodRef = firebaseAdmin.database().ref(`menu/${counterIndex}/foods/${foodIndex}`);
+    const foodRef = db.ref(`menu/${counterIndex}/foods/${foodIndex}`);
 
     const snapshot = await foodRef.once('value');
     console.log("Snapshot:", snapshot.val());
