@@ -8,6 +8,7 @@ import { ScrollArea } from './components/ui/scroll-area';
 import SearchBar from './components/SearchBar';
 import DisplayCart from './components/DisplayCart';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
+import Header from './components/Header';
 
 import useWebSocket from './hooks/useWebSocket';
 import Loading from './components/Loading';
@@ -44,17 +45,13 @@ const App: React.FC = () => {
 
   return (
     <div className="container mx-auto mt-8">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Cashier Dashboard</h1>
-        <div className="flex">
-          <SearchBar value={searchQuery} onChange={handleSearch} />
-          <DisplayCart
-            showCartAnimation={showCartAnimation}
-            calculateTotalQuantity={calculateTotalQuantity}
-            cashiers={menu}
-          />
-        </div>
-      </div>
+      <Header
+        searchQuery={searchQuery}
+        onSearchChange={handleSearch}
+        showCartAnimation={showCartAnimation}
+        calculateTotalQuantity={calculateTotalQuantity}
+        cashiers={menu}
+      />
       {!connected ? (
         <Loading />
       ) : (
@@ -81,7 +78,7 @@ const App: React.FC = () => {
                               </div>
                               <div className="flex flex-col">
                                 <Button
-                                  onClick={(e) => handleAnimation(cashier.id, food.id)}
+                                  onClick={() => handleAnimation(cashier.id, food.id)}
                                   disabled={food.stock === 0}
                                 >
                                   <PlusCircledIcon className="mr-2" /> Add
