@@ -9,6 +9,7 @@ import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { ReloadIcon} from "@radix-ui/react-icons"
 import  CashierCombobox  from "./CashierCombobox";
 import PaymentCombobox from "./PaymentCombobox";
+import { CartItem } from "../interface/CartItem";
  
 interface DisplayCartProps {
     showCartAnimation: boolean;
@@ -16,11 +17,6 @@ interface DisplayCartProps {
     cashiers: Counter[];
 }
 
-interface CartItem {
-    cashierId: string;
-    foodId: string;
-    quantity: number;
-}
 
 const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateTotalQuantity, cashiers }) => {
     const { cartItems, addToCart, removeFromCart, totalAmount, clearCart } = useCart();

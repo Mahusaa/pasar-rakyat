@@ -1,12 +1,6 @@
 import React, { createContext, useContext, useState, FC } from 'react';
 import FoodData from '../data/data';
-
-interface CartItem {
-  cashierId: string;
-  foodId: string;
-  quantity: number;
-}
-
+import { CartItem } from '../interface/CartItem';
 interface CartProviderProps {
   children: React.ReactNode;
 }

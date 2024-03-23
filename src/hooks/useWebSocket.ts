@@ -1,20 +1,8 @@
 import { useState, useEffect } from 'react';
-
-interface Food {
-  id: string;
-  name: string;
-  price: number;
-  stock: number;
-}
-
-interface MenuItem {
-  id: string;
-  name: string;
-  foods: Food[];
-}
+import { CounterItem } from '../interface/CounterItem';
 
 const useWebSocket = (url: string) => {
-  const [data, setData] = useState<MenuItem[]>([]);
+  const [data, setData] = useState<CounterItem[]>([]);
   const [connected, setConnected] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null); // New state for storing errors
 
@@ -28,7 +16,7 @@ const useWebSocket = (url: string) => {
     };
 
     ws.onmessage = (event) => {
-      const newData: MenuItem[] = JSON.parse(event.data);
+      const newData: CounterItem[] = JSON.parse(event.data);
       setData(newData);
     };
 
