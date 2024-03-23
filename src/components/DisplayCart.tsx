@@ -4,8 +4,12 @@ import { Button } from "./ui/button";
 import { useCart } from "../cart/CartProvider";
 import { Counter } from "../data/data";
 import { ScrollArea } from "./ui/scroll-area";
-import CartIcon from "../cart/CartsIcon";
-
+import CartIcon from "./icons/CartsIcon";
+import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { ReloadIcon} from "@radix-ui/react-icons"
+import  CashierCombobox  from "./CashierCombobox";
+import PaymentCombobox from "./PaymentCombobox";
+ 
 interface DisplayCartProps {
     showCartAnimation: boolean;
     calculateTotalQuantity: () => number;
@@ -49,7 +53,7 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
     return (
         <Dialog>
             <DialogTrigger>
-                <Button className={`ml-2 transition-transform duration-150 transform ${showCartAnimation ? 'scale-110' : 'scale-100'}`}><span className="w-4 h-4 mr-1 text-white"><CartIcon /></span> <div className="rounded-full bg-orange-600 ml-2 px-2">{calculateTotalQuantity()}</div></Button>
+                <Button className={`ml-2 transition-transform duration-150 transform ${showCartAnimation ? 'scale-110' : 'scale-100'}`}><span className="w-4 h-4 mr-1 text-white"><CartIcon /></span>Cart <div className="rounded-full bg-orange-600 ml-2 px-2">{calculateTotalQuantity()}</div></Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -91,16 +95,30 @@ const DisplayCart: React.FC<DisplayCartProps> = ({ showCartAnimation, calculateT
                     )}
                 </div>
                 </ScrollArea>
+                <div className="flex flex-col mt-4">
+                    <div className="flex justify-between items-start mb-2">
+                        <label htmlFor="cashier" className="font-bold">Kasir:</label>
+                        <div className="w-48">
+                            <CashierCombobox />
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-start">
+                        <label htmlFor="payment" className="font-bold">Metode:</label>
+                        <div className="w-48">
+                            <PaymentCombobox />
+                        </div>
+                    </div>
+                </div>
                 <div className="flex justify-between items-center font-bold text-lg mt-4">
                     <span>Jumlah Bayar</span>
                     <span className="text-orange-600">Rp. {totalAmount}</span>
                 </div>
                 <div className="text-right mt-4">
-                    <Button variant="outline" className="mr-2 hover:bg-black hover:text-white border-2 border-black" onClick={clearCart}>
+                    <Button variant="outline" className="mr-2" onClick={clearCart}><ReloadIcon className="mr-2"/>
                         Clear
                     </Button>
-                    <Button>
-                        Confirm
+                    <Button><PaperPlaneIcon className="mr-2"/>
+                        Submit
                     </Button>
                 </div>
             </DialogContent>
