@@ -1,43 +1,42 @@
-const { updateStock } = require('../models/data');
+const { updateStock } = require('../models/updateStock');
+const { storeTransactionLog } = require('../models/transactionLogs');
 
 const updateStockController = async (req, res) => {
-  const transactions = req.body;
-  console.log(transactions);
+  const { transactions, transactionLogs } = req.body;
 
-  // Check if transactions is not an array
-  if (!Array.isArray(transactions)) {
-    return res.status(400).json({ error: "Invalid transactions data format. Expected an array." });
+  if (!Array.isArray(transactions) || !Array.isArray(transactionLogs)) {
+    return res.status(400).json({ error: "Invalid data format. Expected arrays for transactions and transaction logs." });
   }
 
-  const transactionLogs = []; // Array to store transaction logs
-
   try {
-    // Iterate over each transaction in the array
-    for (const transaction of transactions) {
-      const { cashierId, foodId, quantity } = transaction;
+    const updatedTransactionLogs = [];
 
-      // Call the updateStock function to update the stock
-      const success = await updateStock(cashierId, foodId, quantity);
+    for (const [index, transaction] of transactions.entries()) {
+      const { counterId, foodId, quantity } = transaction;
+
+      const success = await updateStock(counterId, foodId, quantity);
 
       if (!success) {
-        transactionLogs.push({
-          error: "Insufficient stock or error occurred while updating stock.",
-          transaction,
+        updatedTransactionLogs.push({
+          error: "Stock tidak cukup atau Error saat update stok",
+          transaction: transactions[index],
         });
         continue; 
       }
 
-      // If the transaction was successful, log it
-      transactionLogs.push({
-        message: "Stock updated successfully.",
-        transaction,
-      });
+      const log = transactionLogs[index];
+      if (!log || !log.cashierId || !log.paymentMethod || !log.transactionDetails) {
+        console.error("Invalid transaction log:", log);
+        continue; // Skip this iteration if transaction log is invalid
+      }
+
+      updatedTransactionLogs.push(log);
+
+      await storeTransactionLog(log.cashierId, log.paymentMethod, log.transactionDetails);
     }
 
-    // Send a response with the transaction logs
-    return res.status(200).json({ message: "Update complete.", transactionLogs });
+    return res.status(200).json({ message: "Update complete.", transactionLogs: updatedTransactionLogs });
   } catch (error) {
-    // Handle any errors that occur during the process
     console.error("Error updating stock:", error);
     return res.status(500).json({ error: "Internal server error." });
   }
