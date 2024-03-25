@@ -20,16 +20,16 @@ const updateStock = async (counterId, foodId, quantity) => {
         await foodRef.update({ stock: newStock });
         return true; 
       } else {
-        console.log("Insufficient stock.");
+        console.log("Stock tidak cukup");
         return false; 
       }
     } else {
       console.log("Snapshot does not exist.");
-      return { error: "Food item not found." }; // Return a specific error for non-existing item
+      return { error: "Makanan tidak ada" }; 
     }
   } catch (error) {
     console.error("Error updating stock:", error);
-    return false; // Error occurred while updating stock
+    return false; 
   }
 };
 
