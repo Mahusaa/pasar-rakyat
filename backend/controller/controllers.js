@@ -9,7 +9,8 @@ const updateStockController = async (req, res) => {
   }
 
   try {
-    const updatedTransactionLogs = [];
+    const successTransactionLogs = []
+    const insufficientStock = []
 
     for (const [index, transaction] of transactions.entries()) {
       const { counterId, foodId, quantity } = transaction;
@@ -17,25 +18,22 @@ const updateStockController = async (req, res) => {
       const success = await updateStock(counterId, foodId, quantity);
 
       if (!success) {
-        updatedTransactionLogs.push({
-          error: "Stock tidak cukup atau Error saat update stok",
-          transaction: transactions[index],
-        });
+        insufficientStock.push(transactions[index])
         continue; 
+      } else if(success){
+        successTransactionLogs.push(transactions[index]);
+      } else {
+        return res.status(200).json({ message: "Update Error"});
       }
-
-      const log = transactionLogs[index];
-      if (!log || !log.cashierId || !log.paymentMethod || !log.transactionDetails) {
-        console.error("Invalid transaction log:", log);
-        continue; // Skip this iteration if transaction log is invalid
-      }
-
-      updatedTransactionLogs.push(log);
-
-      await storeTransactionLog(log.cashierId, log.paymentMethod, log.transactionDetails);
+      
+    }
+    if(insufficientStock.length > 0){
+      return res.status(200).json({ message: "Pembelian gagal", transactionLogs: insufficientStock });
+    } else {
+      await storeTransactionLog(transactionLogs, successTransactionLogs);
+      return res.status(200).json({ message: "Pembelian sukses", transactionLogs: successTransactionLogs });
     }
 
-    return res.status(200).json({ message: "Update complete.", transactionLogs: updatedTransactionLogs });
   } catch (error) {
     console.error("Error updating stock:", error);
     return res.status(500).json({ error: "Internal server error." });
