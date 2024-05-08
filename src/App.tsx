@@ -5,8 +5,6 @@ import { Button } from './components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { filterCashiers } from './lib/searchUtils';
 import { ScrollArea } from './components/ui/scroll-area';
-import SearchBar from './components/SearchBar';
-import DisplayCart from './components/DisplayCart';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import Header from './components/Header';
 

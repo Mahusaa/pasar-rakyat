@@ -1,56 +1,51 @@
 import React, { useState, useEffect } from 'react';
 
 const WebSocketTest: React.FC = () => {
-  const [messages, setMessages] = useState<string[] | null>(null);
-  const [messageInput, setMessageInput] = useState<string>('');
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [menu, setMenu] = useState<any[]>([]);
 
   useEffect(() => {
-    const newSocket = new WebSocket('ws://localhost:5000');
+    const ws = new WebSocket('ws://localhost:8080');
 
-    newSocket.onmessage = function(event) {
-      const newMessage: string = event.data;
-      setMessages(prevMessages => (prevMessages ? [...prevMessages, newMessage] : [newMessage]));
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
     };
 
-    newSocket.onopen = function() {
-      console.log('WebSocket connection established.');
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMenu(data);
     };
 
-    newSocket.onclose = function() {
-      console.log('WebSocket connection closed.');
+    ws.onclose = () => {
+      console.log('Disconnected from WebSocket server');
     };
-
-    setSocket(newSocket);
 
     return () => {
-      newSocket.close();
+      ws.close();
     };
   }, []);
-
-  const sendMessage = () => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(messageInput);
-      setMessageInput('');
-      console.log('Message sent to server:', messageInput);
-    } else {
-      console.log('WebSocket connection is not open.');
-    }
-  };
+  console.log(menu)
 
   return (
-    <div className="App">
-      <h1>WebSocket Test</h1>
-      <div>
-        <textarea rows={10} cols={50} value={messages ? messages.join('\n') : ''} readOnly></textarea>
-      </div>
-      <div>
-        <input type="text" value={messageInput} onChange={e => setMessageInput(e.target.value)} placeholder="Enter message" />
-        <button onClick={sendMessage}>Send</button>
-      </div>
+    <div>
+      <h1>Menu from Firebase via WebSocket</h1>
+      <ul>
+        {menu.map((menuItem: any) => (
+          <li key={menuItem.id}>
+            <h2>{menuItem.name}</h2>
+            <ul>
+              {menuItem.foods.map((food: any) => (
+                <li key={food.id}>
+                  <p>Name: {food.name}</p>
+                  <p>Price: {food.price}</p>
+                  <p>Stock: {food.stock}</p>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
 export default WebSocketTest;
-
