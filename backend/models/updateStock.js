@@ -9,12 +9,10 @@ const updateStock = async (counterId, foodId, quantity) => {
     const foodRef = db.ref(`menu/${counterIndex}/foods/${foodIndex}`);
 
     const snapshot = await foodRef.once('value');
-    console.log("Snapshot:", snapshot.val());
 
     if (snapshot.exists()) {
       const currentStock = snapshot.val().stock;
       const newStock = currentStock - quantity;
-      console.log("New stock:", newStock);
 
       if (newStock >= 0) {
         await foodRef.update({ stock: newStock });
@@ -24,7 +22,6 @@ const updateStock = async (counterId, foodId, quantity) => {
         return false; 
       }
     } else {
-      console.log("Snapshot does not exist.");
       return { error: "Makanan tidak ada" }; 
     }
   } catch (error) {
