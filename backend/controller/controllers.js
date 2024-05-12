@@ -9,30 +9,46 @@ const updateStockController = async (req, res) => {
   }
 
   try {
-    const successTransactionLogs = []
-    const insufficientStock = []
+    const successTransactionLogs = [];
+    const failedTransactionLogs = [];
 
-    for (const [index, transaction] of transactions.entries()) {
+    for (const transaction of transactions) {
       const { counterId, foodId, quantity } = transaction;
 
       const success = await updateStock(counterId, foodId, quantity);
 
       if (!success) {
-        insufficientStock.push(transactions[index])
-        continue; 
-      } else if(success){
-        successTransactionLogs.push(transactions[index]);
+        failedTransactionLogs.push(transaction);
       } else {
-        return res.status(200).json({ message: "Update Error"});
+        successTransactionLogs.push(transaction);
       }
-      
     }
-    if(insufficientStock.length > 0){
-      return res.status(200).json({ message: "Pembelian gagal", transactionLogs: insufficientStock });
+
+    if (failedTransactionLogs.length === 0) {
+      await storeTransactionLog(transactionLogs, successTransactionLogs, failedTransactionLogs);
+      return res.status(200).json({ 
+        message: "Pembelian sukses", 
+        successTransactionLogs: successTransactionLogs, 
+        failedTransactionLogs: [], 
+      });
+    } else if (successTransactionLogs.length === 0){
+      await storeTransactionLog(transactionLogs, successTransactionLogs, failedTransactionLogs);
+      return res.status(200).json({ 
+        message: "Pembelian gagal", 
+        successTransactionLogs: [], 
+        failedTransactionLogs: failedTransactionLogs, 
+      });
     } else {
-      await storeTransactionLog(transactionLogs, successTransactionLogs);
-      return res.status(200).json({ message: "Pembelian sukses", transactionLogs: successTransactionLogs });
+      await storeTransactionLog(transactionLogs, successTransactionLogs, failedTransactionLogs);
+      const succesLength = successTransactionLogs.length
+      const failedLength = failedTransactionLogs.length
+      return res.status(200).json({ 
+        message: `${succesLength} pembelian sukses dan ${failedLength} pembelian gagal`, 
+        successTransactionLogs: successTransactionLogs, 
+        failedTransactionLogs: failedTransactionLogs, 
+      });
     }
+    
 
   } catch (error) {
     console.error("Error updating stock:", error);

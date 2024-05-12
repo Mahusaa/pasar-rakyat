@@ -1,13 +1,14 @@
 const firebaseApp = require('../config/firebaseConfig');
 
-const storeTransactionLog = async (transactionLogs, transactionDetails) => {
+const storeTransactionLog = async (transactionLogs, successTransaction, failedTransaction) => {
   try {
     const transactionLogsRef = firebaseApp.database().ref('transactionLogs');
 
     const newTransactionLogRef = transactionLogsRef.push();
     await newTransactionLogRef.set({
       transactionLogs,
-      transactionDetails,
+      successTransaction,
+      failedTransaction,
       timestamp: new Date().toString(), 
     });
 

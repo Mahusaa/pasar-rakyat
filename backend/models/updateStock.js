@@ -18,7 +18,6 @@ const updateStock = async (counterId, foodId, quantity) => {
         await foodRef.update({ stock: newStock });
         return true; 
       } else {
-        console.log("Stock tidak cukup");
         return false; 
       }
     } else {
