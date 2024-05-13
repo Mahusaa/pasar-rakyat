@@ -2,20 +2,27 @@ import React, { useState } from 'react';
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Button } from './ui/button';
 import { cn } from '../lib/utils';
+import { Framework } from "../interface/Framework";
 
-const frameworks = [
+interface Props {
+  className?: string;
+  onSelect: (selectedValue: string) => void; 
+}
+
+const frameworks : Framework[]= [
   { value: 'Cash', label: 'Cash' },
   { value: 'QRIS', label: 'QRIS' },
   { value: 'Transfer', label: 'Transfer' },
 ];
 
-const PaymentCombobox: React.FC<{ className?: string }> = ({className}) => {
+const PaymentCombobox: React.FC<Props> = ({className, onSelect}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
 
   const handleSelect = (selectedValue: string) => {
     setValue(selectedValue);
     setOpen(false);
+    onSelect(selectedValue);
   };
 
   return (

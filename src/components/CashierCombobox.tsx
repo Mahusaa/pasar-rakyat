@@ -2,22 +2,29 @@ import React, { useState } from 'react';
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Button } from './ui/button';
 import { cn } from '../lib/utils';
+import { Framework } from "../interface/Framework"
 
-const frameworks = [
-  { value: 'Kasir 1', label: 'Kasir 1' },
-  { value: 'Kasir 2', label: 'Kasir 2' },
-  { value: 'Kasir 3', label: 'Kasir 3' },
-  { value: 'Kasir 4', label: 'Kasir 4' },
+interface Props {
+  className?: string;
+  onSelect: (selectedValue: string) => void; 
+}
+
+const frameworks : Framework[] = [
+  { value: '1', label: 'Kasir 1' },
+  { value: '2', label: 'Kasir 2' },
+  { value: '3', label: 'Kasir 3' },
+  { value: '4', label: 'Kasir 4' },
   { value: 'Admin', label: 'Admin' },
 ];
 
-const CashierCombobox: React.FC<{ className?: string }> = ({ className }) => {
+const CashierCombobox: React.FC<Props> = ({ className, onSelect }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
 
   const handleSelect = (selectedValue: string) => {
     setValue(selectedValue);
     setOpen(false);
+    onSelect(selectedValue);
   };
 
   return (
