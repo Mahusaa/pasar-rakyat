@@ -10,7 +10,7 @@ const Cart: React.FC = () => {
       <ul>
         {cartItems.map((item, index) => (
           <li key={index}>
-            Cashier ID: {item.cashierId}, Food ID: {item.foodId}, Quantity: {item.quantity}
+            Cashier ID: {item.counterId}, Food ID: {item.foodId}, Quantity: {item.quantity}
           </li>
         ))}
       </ul>

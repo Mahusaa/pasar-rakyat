@@ -1,6 +1,6 @@
 
 export interface CartItem {
-    cashierId: string;
+    counterId: string;
     foodId: string;
     quantity: number;
   }

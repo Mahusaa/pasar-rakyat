@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, FC } from 'react';
 import FoodData from '../data/data';
 import { CartItem } from '../interface/CartItem';
+
 interface CartProviderProps {
   children: React.ReactNode;
 }
@@ -8,8 +9,8 @@ interface CartProviderProps {
 interface CartContextType {
   cartItems: CartItem[];
   totalAmount: number;
-  addToCart: (cashierId: string, foodId: string) => void;
-  removeFromCart: (cashierId: string, foodId: string) => void;
+  addToCart: (counterId: string, foodId: string) => void;
+  removeFromCart: (counterId: string, foodId: string) => void;
   clearCart: () => void;
 }
 
@@ -27,19 +28,19 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
 
-  const addToCart = (cashierId: string, foodId: string) => {
+  const addToCart = (counterId: string, foodId: string) => {
     setCartItems(prevCartItems => {
-      const existingCartItemIndex = prevCartItems.findIndex(item => item.cashierId === cashierId && item.foodId === foodId);
+      const existingCartItemIndex = prevCartItems.findIndex(item => item.counterId === counterId && item.foodId === foodId);
       const updatedCartItems = [...prevCartItems];
       if (existingCartItemIndex !== -1) {
         updatedCartItems[existingCartItemIndex].quantity += 1;
       } else {
-        updatedCartItems.push({ cashierId, foodId, quantity: 1 });
+        updatedCartItems.push({ counterId, foodId, quantity: 1 });
       }
       const amount = updatedCartItems.reduce((total, item) => {
-        const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
-        if (cashier) {
-          const food = cashier.foods.find(food => food.id === item.foodId);
+        const counter = FoodData.find(counter => counter.id === item.counterId);
+        if (counter) {
+          const food = counter.foods.find(food => food.id === item.foodId);
           if (food) {
             total += food.price * item.quantity;
           }
@@ -51,9 +52,9 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
     });
   };
 
-  const removeFromCart = (cashierId: string, foodId: string) => {
+  const removeFromCart = (counterId: string, foodId: string) => {
     setCartItems(prevCartItems => {
-      const existingCartItemIndex = prevCartItems.findIndex(item => item.cashierId === cashierId && item.foodId === foodId);
+      const existingCartItemIndex = prevCartItems.findIndex(item => item.counterId === counterId && item.foodId === foodId);
       if (existingCartItemIndex !== -1) {
         const updatedCartItems = [...prevCartItems];
         if (updatedCartItems[existingCartItemIndex].quantity > 1) {
@@ -62,9 +63,9 @@ export const CartProvider: FC<CartProviderProps> = ({ children }) => {
           updatedCartItems.splice(existingCartItemIndex, 1);
         };
         const amount = updatedCartItems.reduce((total, item) => {
-          const cashier = FoodData.find(cashier => cashier.id === item.cashierId);
-          if (cashier) {
-            const food = cashier.foods.find(food => food.id === item.foodId);
+          const counter = FoodData.find(counter => counter.id === item.counterId);
+          if (counter) {
+            const food = counter.foods.find(food => food.id === item.foodId);
             if (food) {
               total += food.price * item.quantity;
             }
