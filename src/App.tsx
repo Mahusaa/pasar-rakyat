@@ -57,7 +57,7 @@ const App: React.FC = () => {
           {filteredCashiers.length === 0 && searchQuery !== '' ? (
             <div className="text-center mt-32 text-gray-400">No results found.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredCashiers.map((cashier) => (
                 <div key={cashier.id} className="rounded-lg overflow-hidden shadow-md border">
                   <Card>

@@ -19,11 +19,11 @@ const Header: React.FC<HeaderProps> = ({
   cashiers,
 }) => {
   return (
-    <div className="flex justify-between items-center mb-4">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-4 px-6 flex justify-between items-center">
       <h1 className="text-3xl font-bold text-gray-900">Cashier Dashboard</h1>
       <div className="flex items-center">
         <div className="mr-4">
-        <SearchBar value={searchQuery} onChange={onSearchChange} />
+          <SearchBar value={searchQuery} onChange={onSearchChange} />
         </div>
         <DisplayCart
           showCartAnimation={showCartAnimation}
