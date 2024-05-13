@@ -5,6 +5,7 @@ const WebSocket = require('ws');
 const bodyParser = require('body-parser');
 const firebaseApp = require('./config/firebaseConfig');
 const routes = require('./routes/stock');
+const cors = require("cors");
 
 
 
@@ -14,6 +15,7 @@ const wss = new WebSocket.Server({ server });
 
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use('/api', routes);
 
 wss.on('connection', (ws) => {

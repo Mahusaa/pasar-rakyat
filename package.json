@@ -2,6 +2,7 @@
   "name": "pasar-rakyat",
   "version": "0.1.0",
   "private": true,
+  "proxy" : "http://localhost:8080",
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-icons": "^1.3.0",
