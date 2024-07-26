@@ -1,46 +1,64 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Pasar Rakyat
 
-## Available Scripts
+Pasar Rakyat is a web-based cashier application designed for canteens offering a unique 50% discount on all food items. The discount is funded equally by users and donors, with 50% covered by the user and the other 50% by donors. To ensure consistency and prevent overcrowding, the application uses a single gate cashier system. This system connects all cashiers to a central backend, ensuring uniform discounts and real-time stock updates across the canteen.
 
-In the project directory, you can run:
+### Key Features
+- **Single Gate Cashier System:** Centralized checkout process to manage discounts and avoid overcrowding.
+- **Real-Time Stock Updates:** WebSocket technology ensures instant updates on stock availability across all cashiers.
+- **Backend and Frontend Separation:** The application has a separate backend and frontend for better scalability and maintenance.
 
-### `npm start`
+### Technologies Used
+- **Frontend:** React
+- **Backend:** Node.js with WebSocket for real-time communication
+- **Database:** Firebase (specified by `DATABASE_URL`)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Deployment Instructions
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### Prerequisites
+Ensure you have the following installed:
+- Node.js
+- npm (Node Package Manager)
 
-### `npm test`
+#### Clone the Repository
+```bash
+git clone https://github.com/Mahusaa/pasar-rakyat.git
+cd pasar-rakyat
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Install Dependencies
+```bash
+npm install
+```
 
-### `npm run build`
+#### Set Up Environment Variables
+Create a `.env` file in the root directory and add the following line, replacing `Firebase_Link` with your actual Firebase database URL:
+```plaintext
+DATABASE_URL="Firebase_Link"
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Start the Application
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To run the frontend server:
+```bash
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To run the backend server:
+```bash
+npm run start-backend
+```
 
-### `npm run eject`
+#### Build for Production
+To build the frontend for production, use the following command:
+```bash
+npm run build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### Access the Application
+- **Frontend:** Open your browser and navigate to `http://localhost:3000` to access the cashier interface.
+- **Backend:** The backend server will run in the `http://localhost:8080` and listen for requests, handling real-time stock updates and transactions.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Repository Link
+[Pasar Rakyat on GitHub](https://github.com/Mahusaa/pasar-rakyat.git)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
