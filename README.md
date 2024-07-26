@@ -2,6 +2,7 @@
 ## Pasar Rakyat
 
 Pasar Rakyat is a web-based cashier application designed for canteens offering a unique 50% discount on all food items. The discount is funded equally by users and donors, with 50% covered by the user and the other 50% by donors. To ensure consistency and prevent overcrowding, the application uses a single gate cashier system. This system connects all cashiers to a central backend, ensuring uniform discounts and real-time stock updates across the canteen.
+![pasar-rakyat](https://utfs.io/f/ca1c8c62-85c5-4f03-b1db-989003b548b0-9keyxa.png)
 
 ### Key Features
 - **Single Gate Cashier System:** Centralized checkout process to manage discounts and avoid overcrowding.
